@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>BTX Laudos — Final (V7)</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./icon-192.png" />
+  <link rel="stylesheet" href="./styles.css?v=20260108214805">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logoDot" aria-hidden="true"></div>
+      <div>
+        <div class="brandTitle">BTX Laudos — Final (V7)</div>
+        <div class="brandSub">PWA • memória automática (IndexedDB) • fotos • PDF • IA por prompt</div>
+      </div>
+    </div>
+
+    <nav class="actions">
+      <button class="btn" id="btnCases">Meus casos</button>
+      <button class="btn primary" id="btnNew">+ Novo caso</button>
+      <button class="btn" id="btnExport">Exportar</button>
+      <label class="btn fileBtn">Importar <input type="file" id="fileImport" accept="application/json"></label>
+      <button class="btn" id="btnInstall" disabled>Instalar</button>
+      <button class="btn" id="btnPDF" disabled>PDF</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="viewCases" class="card">
+      <div class="cardHeader">
+        <div>
+          <h2>Meus casos</h2>
+          <p class="muted">Tudo fica salvo automaticamente no computador (IndexedDB). Você pode exportar/importar para backup.</p>
+        </div>
+        <div class="pill">Organização premium</div>
+      </div>
+
+      <div class="filters">
+        <div class="field">
+          <label>Busca</label>
+          <input id="q" placeholder="Buscar por código, nome, hipótese, local..." />
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="statusFilter">
+            <option value="">Todos</option>
+            <option value="draft">Rascunho</option>
+            <option value="sent">Enviado</option>
+            <option value="done">Finalizado</option>
+          </select>
+        </div>
+        <div class="kpis">
+          <span class="kpi" id="kpiTotal">0 casos</span>
+          <span class="kpi" id="kpiDraft">0 rascunhos</span>
+          <span class="kpi" id="kpiSent">0 enviados</span>
+          <span class="kpi" id="kpiDone">0 finalizados</span>
+        </div>
+      </div>
+
+      <div class="tableWrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Data</th>
+              <th>Status</th>
+              <th>Resumo</th>
+              <th class="right">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="casesTbody"></tbody>
+        </table>
+      </div>
+
+      <div class="hint muted">Dica: use iniciais/código para privacidade. O app não envia nada para servidor.</div>
+    </section>
+
+    <section id="viewEdit" class="grid2 hidden">
+      <div class="card">
+        <div class="cardHeader">
+          <div>
+            <h2>Dados do caso</h2>
+            <div class="muted small" id="caseMeta">—</div>
+          </div>
+          <div class="row">
+            <div class="field compact">
+              <label>Status do caso</label>
+              <select id="caseStatus">
+                <option value="draft">Rascunho</option>
+                <option value="sent">Enviado</option>
+                <option value="done">Finalizado</option>
+              </select>
+            </div>
+            <button class="btn danger" id="btnDelete">Excluir</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>1. Identificação do profissional / serviço</h3>
+          <div class="grid3">
+            <div class="field"><label>Profissional responsável</label><input id="profNome"></div>
+            <div class="field"><label>Registro profissional</label><input id="profReg"></div>
+            <div class="field"><label>Especialidade</label><input id="profEsp"></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label>Instituição / Serviço</label><input id="profInst"></div>
+            <div class="field"><label>Contato</label><input id="profContato"></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>2. Identificação do caso</h3>
+          <div class="grid3">
+            <div class="field"><label>Código do caso</label><input id="caseCode"></div>
+            <div class="field"><label>Data do atendimento / coleta</label><input id="caseDate" type="date"></div>
+            <div class="field"><label>Finalidade</label><input id="caseGoal"></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label>Paciente (iniciais/código)</label><input id="patId"></div>
+            <div class="field"><label>Idade / sexo</label><input id="patDemo"></div>
+          </div>
+        </div>
+
+        <div class="section"><h3>3. Queixa principal</h3><div class="field"><textarea id="qp" rows="3"></textarea></div></div>
+        <div class="section"><h3>4. História clínica e evolução</h3><div class="field"><textarea id="hx" rows="5"></textarea></div></div>
+
+        <div class="section">
+          <h3>5. Exame clínico e descrição morfológica</h3>
+          <div class="grid2">
+            <div class="field"><label>Localização / topografia</label><input id="topo"></div>
+            <div class="field"><label>Dimensões</label><input id="dim"></div>
+          </div>
+          <div class="field"><label>Descrição</label><textarea id="morph" rows="6"></textarea></div>
+        </div>
+
+        <div class="section">
+          <h3>6. Fatores associados / hipóteses</h3>
+          <div class="grid2">
+            <div class="field"><label>Fatores associados</label><textarea id="fatores" rows="4"></textarea></div>
+            <div class="field"><label>Hipótese(s) clínica(s)</label><textarea id="hip" rows="4"></textarea></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>7. Procedimento / material</h3>
+          <div class="grid2">
+            <div class="field"><label>Tipo de amostra</label><input id="amostra"></div>
+            <div class="field"><label>Fixador / acondicionamento</label><input id="fix"></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label>Data/hora da coleta</label><input id="coleta"></div>
+            <div class="field"><label>Observações</label><input id="obs"></div>
+          </div>
+        </div>
+
+        <div class="section"><h3>8. Solicitação ao patologista</h3><div class="field"><textarea id="req" rows="4"></textarea></div></div>
+        <div class="section"><h3>9. Observações finais</h3><div class="field"><textarea id="final" rows="3"></textarea></div></div>
+
+        <div class="footerNote muted">Documento assistido por sistema digital. Não constitui diagnóstico definitivo isolado.</div>
+      </div>
+
+      <div class="card">
+        <div class="cardHeader">
+          <div>
+            <h2>Imagens + IA</h2>
+            <p class="muted">Fotos ficam salvas no caso. No PDF, entram com legenda.</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>10. Registro fotográfico</h3>
+          <div class="row">
+            <label class="btn fileBtn">Escolher imagens <input type="file" id="photoInput" accept="image/*" multiple></label>
+            <button class="btn" id="btnClearPhotos">Limpar fotos</button>
+          </div>
+          <div id="photosList" class="photos"></div>
+        </div>
+
+        <div class="section">
+          <h3>11. IA — Assistente do laudo (pesquisa)</h3>
+          <div class="muted small">Gera um prompt completo e copia. Você cola no ChatGPT/OpenAI.</div>
+          <div class="field"><label>Sua dúvida (opcional)</label><input id="iaQuestion"></div>
+          <div class="row">
+            <button class="btn primary" id="btnIA">Gerar prompt (copiar)</button>
+            <button class="btn" id="btnCopyPrompt">Copiar prompt</button>
+          </div>
+          <div class="field"><label>Prompt</label><textarea id="iaPrompt" rows="8"></textarea></div>
+          <div class="field"><label>Resposta (cole aqui)</label><textarea id="iaAnswer" rows="8"></textarea></div>
+        </div>
+
+        <div class="section">
+          <h3>Ferramentas</h3>
+          <div class="row wrap">
+            <button class="btn" id="btnBack">← Voltar</button>
+            <button class="btn" id="btnReset">Resetar app</button>
+            <span class="muted small" id="saveState">—</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <template id="printTemplate">
+    <div class="printDoc">
+      <h1>Relatório Clínico — Encaminhamento</h1>
+      <div class="printMeta" id="p_meta"></div>
+
+      <h2>Profissional / serviço</h2><div id="p_prof"></div>
+      <h2>Identificação do caso</h2><div id="p_case"></div>
+      <h2>Queixa principal</h2><div id="p_qp"></div>
+      <h2>História clínica e evolução</h2><div id="p_hx"></div>
+      <h2>Descrição morfológica</h2><div id="p_morph"></div>
+      <h2>Fatores / hipóteses</h2><div id="p_hip"></div>
+      <h2>Procedimento / material</h2><div id="p_mat"></div>
+      <h2>Solicitação</h2><div id="p_req"></div>
+      <h2>Observações finais</h2><div id="p_final"></div>
+
+      <div class="printNote">Documento assistido por sistema digital. Não constitui diagnóstico definitivo isolado.</div>
+
+      <div class="pageBreak"></div>
+      <h2>Registro fotográfico</h2><div id="p_photos"></div>
+      <div class="printFooter">Gerado em <span id="p_gen"></span></div>
+    </div>
+  </template>
+
+  <script src="./app.js?v=20260108214805"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', async () => {
+        try {
+          await navigator.serviceWorker.register('./sw.js?v=20260108214805', { scope: './' });
+        } catch (e) {}
+      });
+    }
+  </script>
+</body>
+</html>

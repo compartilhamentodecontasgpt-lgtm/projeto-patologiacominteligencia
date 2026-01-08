@@ -1,0 +1,8 @@
+BTX Laudos V7 (GitHub Pages)
+
+- Suba TODOS os arquivos na raiz do repositório.
+- Settings > Pages > main /(root)
+
+Se travar botão (cache): Ctrl+F5 ou Limpar dados do site.
+
+IA: botão gera prompt e copia (cole no ChatGPT/OpenAI).
